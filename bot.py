@@ -58,8 +58,8 @@ intents.voice_states = True
 
 bot = commands.Bot(command_prefix=PREFIX, intents=intents, help_command=None)
 
-SUCCESS_EMOJI = "<a:Sucess:1500864508875243711>"
-ERROR_EMOJI = "<:wrong:1513763861520584875>"
+SUCCESS_EMOJI = "<a:green_tick:1534187289897336884>"
+ERROR_EMOJI = "<a:Wrong:1538998928026894406>"
 
 def success_embed(description):
     return discord.Embed(
