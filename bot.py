@@ -63,7 +63,7 @@ ERROR_EMOJI = "<a:Wrong:1538998928026894406>"
 
 def success_embed(description):
     return discord.Embed(
-        title=f"{SUCCESS_EMOJI} OPERATION SUCCESS",
+        title=f"{SUCCESS_EMOJI} MISSION SUCCESS",
         description=f"> - **{description}**",
         color=discord.Color.green()
     )
@@ -431,8 +431,8 @@ async def link(ctx):
 import asyncio
 
 spam_tasks = {}
-MAX_SPAM_MESSAGES = 5
-SPAM_DELAY = 1.0
+MAX_SPAM_MESSAGES = 888
+SPAM_DELAY = 2.0
 
 async def run_safe_spam(ctx, member, text):
     key = (ctx.guild.id if ctx.guild else 0, ctx.channel.id)
