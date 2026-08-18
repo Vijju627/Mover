@@ -58,8 +58,8 @@ intents.voice_states = True
 
 bot = commands.Bot(command_prefix=PREFIX, intents=intents, help_command=None)
 
-SUCCESS_EMOJI = "<a:green_tick:1534187289897336884>"
-ERROR_EMOJI = "<a:Wrong:1538998928026894406>"
+SUCCESS_EMOJI = "<a:Sucess:1500864508875243711>"
+ERROR_EMOJI = "<:wrong:1513763861520584875>"
 
 def success_embed(description):
     return discord.Embed(
@@ -87,7 +87,7 @@ def get_voice_channel(guild, channel_id):
         return channel
     return None
 
-@bot.group(name="vc", invoke_without_command=True)
+@bot.group(name="vc", aliases=["voice"], invoke_without_command=True)
 async def vc(ctx):
     if ctx.invoked_subcommand is not None:
         return
@@ -121,7 +121,7 @@ async def vc(ctx):
     await ctx.send(embed=embed)
 
 @vc.command(name="moveall")
-async def moveall(ctx, channel_id: int):
+async def moveall(ctx, target_channel_id: int, source_channel_id: int = None):
     if not can_manage_vc(ctx):
         return await ctx.send(embed=error_embed(
             "You don't have permission to use voice moderation."
@@ -130,18 +130,24 @@ async def moveall(ctx, channel_id: int):
     if ctx.guild is None:
         return
 
-    target = get_voice_channel(ctx.guild, channel_id)
+    target = get_voice_channel(ctx.guild, target_channel_id)
     if target is None:
         return await ctx.send(embed=error_embed(
             "Please provide a valid voice channel ID."
         ))
 
-    if ctx.author.voice is None or ctx.author.voice.channel is None:
-        return await ctx.send(embed=error_embed(
-            "You must be in a Voice Channel to use voice moderation commands."
-        ))
-
-    source = ctx.author.voice.channel
+    if source_channel_id is not None:
+        source = get_voice_channel(ctx.guild, source_channel_id)
+        if source is None:
+            return await ctx.send(embed=error_embed(
+                "Please provide a valid source Voice Channel ID."
+            ))
+    else:
+        if ctx.author.voice is None or ctx.author.voice.channel is None:
+            return await ctx.send(embed=error_embed(
+                "You must be in a Voice Channel to use voice moderation commands."
+            ))
+        source = ctx.author.voice.channel
 
     if source.id == target.id:
         return await ctx.send(embed=error_embed(
@@ -506,7 +512,7 @@ async def on_message(message):
     owner = message.author.id in BOT_OWNER_IDS
 
     if owner:
-        if first in {"vc", "link", "spam", "stopspam"}:
+        if first in {"vc", "voice", "link", "spam", "stopspam"}:
             message.content = PREFIX + content
     else:
         # Keep prefixless Spam/Stopspam visible to non-owners so they get
@@ -555,7 +561,7 @@ async def on_message(message):
     owner = message.author.id in BOT_OWNER_IDS
 
     if owner:
-        if first in {"vc", "link", "spam", "stopspam"}:
+        if first in {"vc", "voice", "link", "spam", "stopspam"}:
             message.content = PREFIX + content
     else:
         # Keep prefixless Spam/Stopspam visible to non-owners so they get
